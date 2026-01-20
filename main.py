@@ -5,7 +5,7 @@ from services.calcul import calcul_tableau, calcul_detail, obtenir_calculateur, 
 from datetime import date, timedelta
 from pathlib import Path
 from core.tableau_tarifs import TableauTarifs # Pour l'affichage console et export
-from core.utils import date_fr
+from core.utils import date_fr, formater_date_jour
 
 # Détermination du dossier de base (script Python ou .exe PyInstaller)
 if getattr(sys, "frozen", False):
@@ -138,9 +138,11 @@ def main():
 
     print("\nDétail journalier :")
     for jour, prix in details:
-        print(f"{jour.strftime('%d-%m-%Y')} : {prix:.2f} €")
-    print(f"\nPrix total : {total:.2f} €, pour {nb_jours} jours.")
-    print(f"\nPrix moyen journalier : {total/nb_jours:.2f} €.")
+        date_col = formater_date_jour(jour)
+        print(f"{date_col} : {prix:>6.2f} €") # >6.2f aligne le prix à droite
+    print("-" * 30)
+    print(f"Prix total   : {total:>6.2f} €, pour {nb_jours} nuits.")
+    print(f"Prix moyen   : {total/nb_jours:>6.2f} € par nuit.")
 
 
 if __name__ == "__main__":

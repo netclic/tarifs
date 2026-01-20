@@ -1,16 +1,15 @@
 // Gestion de l'affichage du champ plateforme (utile seulement en mode tableau)
-document.getElementsByName('mode').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        const plateGroup = document.getElementById('plateforme-group');
-        if (plateGroup) {
-            plateGroup.style.display = e.target.value === 'tableau' ? 'block' : 'none';
-        }
-    });
-});
 
+// Variables pour mémoriser les dates du mode séjour
 const inputDebut = document.getElementById('date_debut');
 const inputFin = document.getElementById('date_fin');
 const inputNbJours = document.getElementById('nb_jours');
+
+let memoSejour = {
+    debut: inputDebut.value,
+    fin: inputFin.value,
+    nb: inputNbJours.value
+};
 
 // Mise à jour de la date de fin quand on change début ou nombre de jours
 function majDateFin() {
@@ -35,6 +34,45 @@ function majNbJours() {
         inputNbJours.value = diffDays > 0 ? diffDays : 1;
     }
 }
+
+document.getElementsByName('mode').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        const mode = e.target.value;
+        const plateGroup = document.getElementById('plateforme-group');
+        const year = new Date().getFullYear();
+
+        // NETTOYAGE : On cache et on vide les sections de résultats dès qu'on change de mode
+        document.querySelectorAll('.result-section').forEach(section => {
+            section.classList.add('hidden');
+            // On vide aussi les contenus pour repartir à zéro
+            const tbody = section.querySelector('tbody');
+            if (tbody) tbody.innerHTML = '';
+            const list = section.querySelector('ul');
+            if (list) list.innerHTML = '';
+        });
+
+        if (mode === 'tableau') {
+            // Sauvegarde des dates actuelles avant de passer en mode tableau
+            memoSejour.debut = inputDebut.value;
+            memoSejour.fin = inputFin.value;
+            memoSejour.nb = inputNbJours.value;
+
+            // Passage aux dates de l'année complète
+            inputDebut.value = `${year}-01-01`;
+            inputFin.value = `${year}-12-31`;
+            majNbJours(); // Recalcule le nombre de jours pour l'année
+
+            if (plateGroup) plateGroup.style.display = 'block';
+        } else {
+            // Retour au mode détail : on restaure les dates mémorisées
+            inputDebut.value = memoSejour.debut;
+            inputFin.value = memoSejour.fin;
+            inputNbJours.value = memoSejour.nb;
+
+            if (plateGroup) plateGroup.style.display = 'none';
+        }
+    });
+});
 
 inputDebut.addEventListener('change', majDateFin);
 inputNbJours.addEventListener('input', majDateFin);
@@ -87,7 +125,9 @@ async function afficherDetail(formData) {
     list.innerHTML = '';
     data.details.forEach(day => {
         const li = document.createElement('li');
-        li.innerText = `${day[0]} : ${day[1].toFixed(2)} €`;
+        // day[0] contient déjà "mercredi  04-04-2026" grâce à Python
+        const prixLabel = day[1].toFixed(2).padStart(7, ' '); 
+        li.innerText = `${day[0]} : ${prixLabel} €`;
         list.appendChild(li);
     });
 

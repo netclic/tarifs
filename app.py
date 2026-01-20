@@ -5,6 +5,7 @@ from services.calcul import calcul_tableau, calcul_detail, RESULTS_DIR
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
+from core.utils import formater_date_jour
 
 import os
 
@@ -53,8 +54,8 @@ def detail(
     nb_nuitees = len(details)
     moyenne = total / nb_nuitees if nb_nuitees > 0 else 0
     
-    # On formate les dates en texte pour le JavaScript
-    formated_details = [[d.strftime("%d-%m-%Y"), p] for d, p in details]
+    # On utilise formater_date_jour pour envoyer une chaîne déjà prête
+    formated_details = [[formater_date_jour(d), p] for d, p in details]
     
     return {
         "details": formated_details, 

@@ -14,13 +14,13 @@
             <div class="form-group mode-selector">
                 <label>Mode de calcul :</label>
                 <div class="radio-group">
-                    <input type="radio" id="mode_tableau" name="mode" value="tableau" checked>
-                    <label for="mode_tableau">Tableau récapitulatif</label>
-                    
-                    <input type="radio" id="mode_detail" name="mode" value="detail">
+                    <input type="radio" id="mode_detail" name="mode" value="detail" checked>
                     <label for="mode_detail">Détail du séjour</label>
+
+                        <input type="radio" id="mode_tableau" name="mode" value="tableau">
+                        <label for="mode_tableau">Tableau récapitulatif</label>
+                    </div>
                 </div>
-            </div>
 
             <div class="form-group">
                 <label for="date_debut">Date de début :</label>
@@ -40,9 +40,10 @@
                 </div>
 
             <!-- Ajout de l'ID ici pour le JavaScript -->
-            <div class="form-group" id="plateforme-group">
-                <label for="plateforme">Plateforme :</label>
-                <select id="plateforme" name="plateforme">
+                <!-- Caché par défaut car le mode détail est actif au chargement -->
+                <div class="form-group" id="plateforme-group" style="display: none;">
+                    <label for="plateforme">Plateforme :</label>
+                    <select id="plateforme" name="plateforme">
                     <option value="">Nets (Propriétaire)</option>
                     <option value="airbnb">Airbnb</option>
                     <option value="booking">Booking</option>
