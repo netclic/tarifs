@@ -2,9 +2,9 @@ name: Build Binaries
 
 on:
   push:
-    branches: [ "main" ] # Déclenche le build à chaque commit sur main
+    branches: [ "master" ] # Déclenche le build à chaque commit sur main
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
