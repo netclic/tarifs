@@ -1,0 +1,45 @@
+name: Build Binaries
+
+on:
+  push:
+    branches: [ "main" ] # Déclenche le build à chaque commit sur main
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # On définit les systèmes d'exploitation cibles
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        # Ajoutez ici d'autres dépendances si nécessaire (ex: pip install -r requirements.txt)
+
+    - name: Build with PyInstaller (Windows)
+      if: matrix.os == 'windows-latest'
+      run: pyinstaller --onefile --console --name calculateur_tarifs_win main.py
+
+    - name: Build with PyInstaller (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: pyinstaller --onefile --name calculateur_tarifs_linux main.py
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: binary-${{ matrix.os }}
+        path: dist/calculateur_tarifs_*
