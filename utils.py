@@ -1,12 +1,26 @@
 from datetime import datetime, date
 
-def date_fr(texte: str) -> date:
+
+def date_fr(chaine_date: str) -> date:
     """
-    Convertit une date JJ-MM-AAAA en date Python.
+    Convertit une chaîne de caractères en objet date.
+    Accepte plusieurs séparateurs : '-', '/', '.'
     """
-    try:
-        return datetime.strptime(texte, "%d-%m-%Y").date()
-    except ValueError:
-        raise ValueError(
-            f"Date invalide '{texte}' (format attendu JJ-MM-AAAA)"
-        )
+    formats_possibles = [
+        "%d-%m-%Y",
+        "%d/%m/%Y",
+        "%d.%m.%Y",
+    ]
+
+    nettoyee = chaine_date.strip()
+
+    for fmt in formats_possibles:
+        try:
+            return datetime.strptime(nettoyee, fmt).date()
+        except ValueError:
+            continue
+
+    raise ValueError(
+        f"Format de date invalide : '{chaine_date}'. "
+        "Utilisez JJ-MM-AAAA, JJ/MM/AAAA ou JJ.MM.AAAA"
+    )
