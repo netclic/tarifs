@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Tarifs</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur de Tarifs de Location</h1>
+
+        <form id="calc-form">
+            <div class="form-group mode-selector">
+                <label>Mode de calcul :</label>
+                <div class="radio-group">
+                    <input type="radio" id="mode_tableau" name="mode" value="tableau" checked>
+                    <label for="mode_tableau">Tableau récapitulatif</label>
+                    
+                    <input type="radio" id="mode_detail" name="mode" value="detail">
+                    <label for="mode_detail">Détail du séjour</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="date_debut">Date de début :</label>
+                <input type="date" id="date_debut" name="date_debut" value="{{ default_debut }}" required>
+            </div>
+
+            <div class="form-row">
+                    <div class="form-group">
+                        <label for="nb_jours">Nombre de jours :</label>
+                        <input type="number" id="nb_jours" name="nb_jours" value="7" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date_fin">Date de fin :</label>
+                        <input type="date" id="date_fin" name="date_fin" value="{{ default_fin }}" required>
+                    </div>
+                </div>
+
+            <!-- Ajout de l'ID ici pour le JavaScript -->
+            <div class="form-group" id="plateforme-group">
+                <label for="plateforme">Plateforme :</label>
+                <select id="plateforme" name="plateforme">
+                    <option value="">Nets (Propriétaire)</option>
+                    <option value="airbnb">Airbnb</option>
+                    <option value="booking">Booking</option>
+                    <option value="abritel">Abritel</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submit-btn">Calculer</button>
+        </form>
+
+        <!-- Zone pour le mode TABLEAU -->
+        <div id="results-table" class="hidden result-section">
+            <h2>Tableau des tarifs</h2>
+            <div class="table-container">
+                <table id="tarifs-table">
+                    <thead>
+                        <tr>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Période</th>
+                            <th>Semaine (unit)</th>
+                            <th>Weekend (unit)</th>
+                            <th>Prix 7 jours</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <a href="/download-csv" class="btn-download">Télécharger le CSV</a>
+        </div>
+
+        <!-- Zone pour le mode DÉTAIL -->
+        <div id="results-detail" class="hidden result-section">
+            <h2>Récapitulatif du séjour</h2>
+            <div class="summary-box">
+                <p id="total-price"></p>
+                <p id="avg-price"></p>
+            </div>
+            <ul id="daily-list"></ul>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

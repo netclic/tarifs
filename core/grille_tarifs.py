@@ -1,5 +1,5 @@
 import csv
-from tarifs import Tarif
+from core.tarifs import Tarif
 
 class GrilleTarifs:
     """

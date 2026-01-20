@@ -1,13 +1,11 @@
 import argparse
 import sys
 
-from calculateur import CalculateurLocation
-from calendrier_tarifaire import CalendrierTarifaire
+from services.calcul import calcul_tableau, calcul_detail, obtenir_calculateur, RESULTS_DIR
 from datetime import date, timedelta
-from grille_tarifs import GrilleTarifs
 from pathlib import Path
-from tableau_tarifs import TableauTarifs
-from utils import date_fr
+from core.tableau_tarifs import TableauTarifs # Pour l'affichage console et export
+from core.utils import date_fr
 
 # Détermination du dossier de base (script Python ou .exe PyInstaller)
 if getattr(sys, "frozen", False):
@@ -64,10 +62,10 @@ def main():
 
     args = parser.parse_args()
 
-    # Unification de la plateforme
+    # Unification de la plateforme et activation automatique du mode tableau
     plateforme = args.commission
-    if args.airbnb:
-        plateforme = "airbnb"
+    if plateforme:
+        args.tableau = True
 
     # --- Gestion des dates ---
     date_debut = None
@@ -117,33 +115,25 @@ def main():
     if nb_jours < JOURS_MINI:
         raise ValueError(f"Séjour trop court ({nb_jours} jour(s)). Le minimum est de {JOURS_MINI} jours.")
 
-    # Initialisation de la logique métier à partir des fichiers de configuration
-    # 1. Chargement des tarifs unitaires
-    grille = GrilleTarifs.depuis_fichier(str(BASE_DIR / "prix.csv"))
-
-    # 2. Chargement du calendrier des périodes (haute saison, basse saison, etc.)
-    calendrier = CalendrierTarifaire.depuis_fichier(str(BASE_DIR / "periode.csv"), grille)
-    # 3. Création du moteur de calcul
-    calculateur = CalculateurLocation(calendrier, grille)
-
-    # Si une commission est demandée, on force le mode tableau
-    if plateforme:
-        args.tableau = True
-
+    # --- Remplacement de l'initialisation par l'appel aux services ---
     # ---------- Mode tableau ----------
-    # Ce mode regroupe les jours par périodes tarifaires identiques
     if args.tableau:
+        calculateur = obtenir_calculateur()
         tableau = TableauTarifs(calculateur, plateforme=plateforme)
+        
         # Affichage dans la console
         tableau.afficher_plage(date_debut, date_fin)
-        # Génération du fichier de sortie CSV
+        
+        # Génération du fichier de sortie dans le dossier results
         nom_fichier = f"tableau_tarifs_{plateforme}.csv" if plateforme else "tableau_tarifs.csv"
-        tableau.exporter_csv_plage(nom_fichier, date_debut, date_fin)
-        print("\nTableau exporté dans 'tableau_tarifs_plage.csv'")
+        chemin_export = RESULTS_DIR / nom_fichier
+        
+        tableau.exporter_csv_plage(str(chemin_export), date_debut, date_fin)
+        print(f"\nTableau exporté dans '{chemin_export.relative_to(BASE_DIR)}'")
         return
 
-    # ---------- Mode normal : détail journalier ----------
-    details, total = calculateur.calculer(date_debut, date_fin)
+    # Mode normal
+    details, total = calcul_detail(date_debut, date_fin)
     nb_jours = (date_fin - date_debut).days + 1
 
     print("\nDétail journalier :")
