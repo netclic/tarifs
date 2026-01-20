@@ -102,7 +102,8 @@ def main():
         # Affichage dans la console
         tableau.afficher_plage(date_debut, date_fin)
         # Génération du fichier de sortie CSV
-        tableau.exporter_csv_plage("tableau_tarifs_plage.csv", date_debut, date_fin)
+        nom_fichier = f"tableau_tarifs_{plateforme}.csv" if plateforme else "tableau_tarifs.csv"
+        tableau.exporter_csv_plage(nom_fichier, date_debut, date_fin)
         print("\nTableau exporté dans 'tableau_tarifs_plage.csv'")
         return  # <--- IL MANQUAIT CE RETURN ICI
 
