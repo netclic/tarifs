@@ -3,7 +3,7 @@ import sys
 
 from calculateur import CalculateurLocation
 from calendrier_tarifaire import CalendrierTarifaire
-from datetime import date
+from datetime import date, timedelta
 from grille_tarifs import GrilleTarifs
 from pathlib import Path
 from tableau_tarifs import TableauTarifs
@@ -35,22 +35,20 @@ def demander_date(message: str) -> date:
 def main():
     """
     Point d'entrée principal du script de calcul de tarifs de location.
-
-    Le script peut être utilisé en mode interactif ou via des arguments CLI.
-    Il permet soit d'afficher un détail journalier, soit de générer un tableau
-    récapitulatif par période.
     """
     # Configuration des arguments de la ligne de commande (CLI)
     parser = argparse.ArgumentParser(description="Calcul de location saisonnière")
 
-    # Argument pour la date de début au format JJ-MM-AAAA
-    parser.add_argument("--date_debut", help="Date de début de séjour (JJ-MM-AAAA)")
+    # Argument pour la date de début
+    parser.add_argument("-d", "--date-debut", help="Date de début (JJ-MM-AAAA, ...)")
 
-    # Argument pour la date de fin au format JJ-MM-AAAA
-    parser.add_argument("--date_fin", help="Date de fin de séjour (JJ-MM-AAAA)")
+    # Argument pour la date de fin OU le nombre de jours
+    group_fin = parser.add_mutually_exclusive_group()
+    group_fin.add_argument("-f", "--date-fin", help="Date de fin (JJ-MM-AAAA, ...)")
+    group_fin.add_argument("-n", "--nb-jours", type=int, help="Nombre de jours de location")
 
-    # Switch pour activer le mode tableau (si présent, args.tableau sera True)
-    parser.add_argument("--tableau", action="store_true",
+    # Switch pour activer le mode tableau
+    parser.add_argument("-t", "--tableau", action="store_true",
                         help="Afficher le tableau résumé par période pour la plage de dates")
 
     # Argument pour la commission par plateforme
@@ -68,15 +66,34 @@ def main():
     if args.airbnb:
         plateforme = "airbnb"
 
-    # Gestion des dates : on vérifie si les deux dates ont été passées en argument
-    if args.date_debut and args.date_fin:
+    # --- Gestion des dates ---
+    # 1. Date de début
+    if args.date_debut:
         date_debut = date_fr(args.date_debut)
+    else:
+        print("Date de début absente → saisie requise")
+        date_debut = demander_date("Date de début : ")
+
+    # 2. Date de fin (calculée ou saisie)
+    if args.nb_jours:
+        # Si on a un nombre de jours, la date de fin est début + (N-1) jours
+        # (Ex: début le 1er, 3 jours -> 1, 2, 3. Fin le 3)
+        date_fin = date_debut + timedelta(days=args.nb_jours - 1)
+    elif args.date_fin:
         date_fin = date_fr(args.date_fin)
     else:
-        # Sinon, on bascule en mode interactif pour demander les informations manquantes
-        print("Dates absentes ou incomplètes → saisie requise")
-        date_debut = demander_date("Date de début (JJ-MM-AAAA) : ")
-        date_fin = demander_date("Date de fin   (JJ-MM-AAAA) : ")
+        print("Date de fin ou durée absente → saisie requise")
+        choix = input("Voulez-vous saisir une (f)in ou une (d)urée ? [f/d] : ").lower()
+        if choix == 'd':
+            while True:
+                try:
+                    n = int(input("Nombre de jours : "))
+                    date_fin = date_debut + timedelta(days=n - 1)
+                    break
+                except ValueError:
+                    print("Veuillez saisir un nombre entier.")
+        else:
+            date_fin = demander_date("Date de fin   : ")
 
     # Validation métier : le séjour doit durer au moins une nuit
     if date_fin <= date_debut:
