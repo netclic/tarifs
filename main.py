@@ -114,7 +114,7 @@ def main():
     for jour, prix in details:
         print(f"{jour.strftime('%d-%m-%Y')} : {prix:.2f} €")
     print(f"\nPrix total : {total:.2f} €, pour {nb_jours} jours.")
-    print(f"\nPrix moyen journalier : {total/nb_jours:.2f} €")
+    print(f"\nPrix moyen journalier : {total/nb_jours:.2f} €.")
 
 
 if __name__ == "__main__":
