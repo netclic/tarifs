@@ -38,11 +38,11 @@ class TableauTarifs:
     def _prix_7_jours(self, debut: date, fin: date, tarif) -> str:
         """
         Calcule le prix pour 7 jours consécutifs à partir de 'debut'.
-        Retourne une chaîne formatée ou 'période trop courte'.
+        Retourne une chaîne formatée sans le symbole € pour le CSV.
         """
         duree = (fin - debut).days + 1
         if duree < 7:
-            return "période trop courte"
+            return "trop court"
 
         total = 0.0
         for i in range(7):
@@ -50,7 +50,7 @@ class TableauTarifs:
             prix_net = tarif.prix_pour_jour(jour)
             total += self.ajuster_prix(prix_net)
 
-        return f"{total:.2f} €"
+        return f"{total:.2f}" # On retire le € ici
 
     # ------------------------------------------------------------------
     # TABLEAU COMPLET (toutes les périodes)
@@ -179,7 +179,9 @@ class TableauTarifs:
             "prix_semaine_7j",
         ]
 
-        with open(chemin_fichier, "w", newline="", encoding="utf-8") as f:
+        # On utilise 'utf-8-sig' pour ajouter un BOM (Byte Order Mark)
+        # Cela permet à LibreOffice/Excel de reconnaître l'UTF-8 immédiatement.
+        with open(chemin_fichier, "w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=champs, delimiter=";")
             writer.writeheader()
             for ligne in lignes:
