@@ -15,6 +15,9 @@ if getattr(sys, "frozen", False):
 else:
     BASE_DIR = Path(__file__).resolve().parent
 
+JOURS_MINI = 2
+
+
 def demander_date(message: str) -> date:
     """
     Demande une date à l'utilisateur via l'entrée standard.
@@ -67,6 +70,9 @@ def main():
         plateforme = "airbnb"
 
     # --- Gestion des dates ---
+    date_debut = None
+    date_fin = None
+
     # 1. Date de début
     if args.date_debut:
         date_debut = date_fr(args.date_debut)
@@ -76,6 +82,8 @@ def main():
 
     # 2. Date de fin (calculée ou saisie)
     if args.nb_jours:
+        if args.nb_jours < JOURS_MINI:
+            raise ValueError(f"La durée minimum de séjour est de {JOURS_MINI} jours.")
         # Si on a un nombre de jours, la date de fin est début + (N-1) jours
         # (Ex: début le 1er, 3 jours -> 1, 2, 3. Fin le 3)
         date_fin = date_debut + timedelta(days=args.nb_jours - 1)
@@ -88,16 +96,26 @@ def main():
             while True:
                 try:
                     n = int(input("Nombre de jours : "))
+                    if n < JOURS_MINI:
+                        print(f"Erreur : Le séjour doit être de {JOURS_MINI} jours minimum.")
+                        continue
                     date_fin = date_debut + timedelta(days=n - 1)
                     break
                 except ValueError:
                     print("Veuillez saisir un nombre entier.")
         else:
-            date_fin = demander_date("Date de fin   : ")
+            while True:
+                date_fin = demander_date(f"Date de fin (séjour mini {JOURS_MINI} jours) : ")
+                if (date_fin - date_debut).days + 1 < JOURS_MINI:
+                    print(
+                        f"Erreur : La date de fin doit être au moins le {(date_debut + timedelta(days=1)).strftime('%d/%m/%Y')}")
+                else:
+                    break
 
-    # Validation métier : le séjour doit durer au moins une nuit
-    if date_fin <= date_debut:
-        raise ValueError("La date de fin doit être postérieure à la date de début")
+    # Validation métier finale
+    nb_jours = (date_fin - date_debut).days + 1
+    if nb_jours < JOURS_MINI:
+        raise ValueError(f"Séjour trop court ({nb_jours} jour(s)). Le minimum est de {JOURS_MINI} jours.")
 
     # Initialisation de la logique métier à partir des fichiers de configuration
     # 1. Chargement des tarifs unitaires
@@ -122,7 +140,7 @@ def main():
         nom_fichier = f"tableau_tarifs_{plateforme}.csv" if plateforme else "tableau_tarifs.csv"
         tableau.exporter_csv_plage(nom_fichier, date_debut, date_fin)
         print("\nTableau exporté dans 'tableau_tarifs_plage.csv'")
-        return  # <--- IL MANQUAIT CE RETURN ICI
+        return
 
     # ---------- Mode normal : détail journalier ----------
     details, total = calculateur.calculer(date_debut, date_fin)
