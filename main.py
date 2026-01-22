@@ -53,7 +53,7 @@ def main():
                         help="Afficher le tableau résumé par période pour la plage de dates")
 
     # Argument pour la commission par plateforme
-    parser.add_argument("-c", "--commission", choices=["airbnb", "booking", "abritel"],
+    parser.add_argument("-c", "--commission", choices=["airbnb", "booking", "abritel", "gites"],
                         help="Calculer le tableau avec la commission d'une plateforme")
 
     # On garde --airbnb pour la compatibilité ou on le retire, ici je le laisse comme alias

@@ -11,7 +11,8 @@ class TableauTarifs:
     COMMISSIONS = {
         "airbnb": 0.036,
         "booking": 0.164,
-        "abritel": 0.08
+        "abritel": 0.08,
+        "gites" : 0.03
     }
 
     def __init__(self, calculateur, plateforme=None):
@@ -155,14 +156,14 @@ class TableauTarifs:
         print("-" * 80)
 
         print(
-            f"{'Début':<12} {'Fin':<12} {'Période':<8} "
+            f"{'Début':<12} {'Fin':<12} {'Période':<15} "
             f"{'Prix semaine':<12} {'Prix weekend':<12} {'Prix 7j':<20}"
         )
         print("-" * 80)
 
         for l in lignes:
             print(
-                f"{l['debut']:<12} {l['fin']:<12} {l['periode']:<8} "
+                f"{l['debut']:<12} {l['fin']:<12} {l['periode']:<15} "
                 f"{l['prix_semaine_unit']:<12} {l['prix_weekend_unit']:<12} "
                 f"{l['prix_semaine_7j']:<20}"
             )
