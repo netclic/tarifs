@@ -1,6 +1,9 @@
 id;prix_semaine;prix_weekend
-Basse;50;55
-Moyenne;63;68
-Haute;70;80
-Ete;93;93
-Speciale2;40;45
+Basse_2026;50;55
+Moyenne_2026;63;68
+Haute_2026;70;80
+Tres_haute_2026;93;93
+Basse_2027;52;57
+Moyenne_2027;65;70
+Haute_2027;72;82
+Tres_haute_2027;95;95
