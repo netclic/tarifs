@@ -1,5 +1,6 @@
 import csv
 from datetime import date, timedelta
+from decimal import Decimal, ROUND_UP
 
 
 class TableauTarifs:
@@ -26,15 +27,18 @@ class TableauTarifs:
     # ------------------------------------------------------------------
     # Utilitaires
     # ------------------------------------------------------------------
-    def ajuster_prix(self, prix: float) -> float:
+    def ajuster_prix(self, prix: float) -> int:
         """
-        Ajuste un prix pour que le NET reste identique après
-        commission de la plateforme choisie.
+        Ajuste le prix pour conserver le NET après commission
+        et arrondit TOUJOURS à l'euro supérieur.
         """
         if self.plateforme in self.COMMISSIONS:
-            taux = self.COMMISSIONS[self.plateforme]
-            return round(prix / (1 - taux), 2)
-        return prix
+            taux = Decimal(str(self.COMMISSIONS[self.plateforme]))
+            brut = Decimal(str(prix)) / (Decimal("1") - taux)
+            return int(brut.quantize(Decimal("1"), rounding=ROUND_UP))
+
+        return int(Decimal(str(prix)).quantize(Decimal("1"), rounding=ROUND_UP))
+
 
     def _prix_7_jours(self, debut: date, fin: date, tarif) -> str:
         """
