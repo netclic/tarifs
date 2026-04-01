@@ -121,19 +121,17 @@ async function afficherDetail(formData) {
     const data = await response.json();
 
     const box = document.querySelector('.summary-box');
+    const lignes = [
+        `Nuitées         : ${data.total_nuitees.toFixed(2)} € (${data.nb_nuitees} nuits · moy. ${data.moyenne.toFixed(2)} €/nuit)`,
+    ];
     if (data.menage_montant > 0) {
-        box.innerHTML = `
-            <p>Nuitées : ${data.total_nuitees.toFixed(2)} € <small>(${data.nb_nuitees} nuits · moy. ${data.moyenne.toFixed(2)} €/nuit)</small></p>
-            <p>Frais de ménage : ${data.menage_montant.toFixed(2)} €</p>
-            <hr>
-            <p id="total-price"><strong>Total : ${data.total.toFixed(2)} €</strong></p>
-        `;
-    } else {
-        box.innerHTML = `
-            <p id="total-price"><strong>Total : ${data.total.toFixed(2)} €</strong> (${data.nb_nuitees} nuits)</p>
-            <p id="avg-price">Prix moyen par nuit : ${data.moyenne.toFixed(2)} €</p>
-        `;
+        lignes.push(`Frais de ménage : ${data.menage_montant.toFixed(2)} €`);
     }
+    lignes.push(`Total           : ${data.total.toFixed(2)} €`);
+    box.innerHTML = lignes.map((l, i) => {
+        const isLast = i === lignes.length - 1;
+        return `<p class="summary-line${isLast ? ' summary-total' : ''}">${l}</p>`;
+    }).join('');
 
     const list = document.getElementById('daily-list');
     list.innerHTML = '';

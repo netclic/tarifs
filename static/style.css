@@ -123,17 +123,16 @@ th {
     margin-bottom: 15px;
     border-left: 5px solid #3498db;
 }
-.summary-box hr {
-    border: none;
+.summary-line {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    margin: 3px 0;
+    white-space: pre;
+}
+.summary-total {
     border-top: 1px solid #a8cfe8;
-    margin: 8px 0;
-}
-.summary-box p {
-    margin: 4px 0;
-}
-.summary-box small {
-    color: #555;
-    font-weight: normal;
+    margin-top: 6px;
+    padding-top: 6px;
 }
 
 #daily-list {
