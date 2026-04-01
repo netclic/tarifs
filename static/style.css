@@ -123,6 +123,18 @@ th {
     margin-bottom: 15px;
     border-left: 5px solid #3498db;
 }
+.summary-box hr {
+    border: none;
+    border-top: 1px solid #a8cfe8;
+    margin: 8px 0;
+}
+.summary-box p {
+    margin: 4px 0;
+}
+.summary-box small {
+    color: #555;
+    font-weight: normal;
+}
 
 #daily-list {
     list-style: none;

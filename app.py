@@ -68,6 +68,7 @@ def detail(
 
     # On utilise formater_date_jour pour envoyer une chaîne déjà prête
     formated_details = [[formater_date_jour(d), p] for d, p in details]
+    montant_menage = 0.0
     if menage:
         montant_menage = frais_menage(nb_nuitees)
         formated_details.append(["Frais de ménage", montant_menage])
@@ -76,9 +77,10 @@ def detail(
     return {
         "details": formated_details,
         "total": total,
+        "total_nuitees": total - montant_menage,
+        "menage_montant": montant_menage,
         "moyenne": moyenne,
         "nb_nuitees": nb_nuitees,
-        "menage": menage
     }
 
 @app.get("/download-csv")

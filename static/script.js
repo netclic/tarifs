@@ -120,18 +120,28 @@ async function afficherDetail(formData) {
     const response = await fetch(`/detail?${params.toString()}`);
     const data = await response.json();
 
-    document.getElementById('total-price').innerHTML = `<strong>Total : ${data.total.toFixed(2)} €</strong> (${data.nb_nuitees} nuits)`;
-    document.getElementById('avg-price').innerHTML = `Prix moyen par nuit : ${data.moyenne.toFixed(2)} €`;
+    const box = document.querySelector('.summary-box');
+    if (data.menage_montant > 0) {
+        box.innerHTML = `
+            <p>Nuitées : ${data.total_nuitees.toFixed(2)} € <small>(${data.nb_nuitees} nuits · moy. ${data.moyenne.toFixed(2)} €/nuit)</small></p>
+            <p>Frais de ménage : ${data.menage_montant.toFixed(2)} €</p>
+            <hr>
+            <p id="total-price"><strong>Total : ${data.total.toFixed(2)} €</strong></p>
+        `;
+    } else {
+        box.innerHTML = `
+            <p id="total-price"><strong>Total : ${data.total.toFixed(2)} €</strong> (${data.nb_nuitees} nuits)</p>
+            <p id="avg-price">Prix moyen par nuit : ${data.moyenne.toFixed(2)} €</p>
+        `;
+    }
 
     const list = document.getElementById('daily-list');
     list.innerHTML = '';
     data.details.forEach(day => {
+        if (day[0] === 'Frais de ménage') return; // affiché dans le récapitulatif
         const li = document.createElement('li');
         const prixLabel = day[1].toFixed(2).padStart(7, ' ');
         li.innerText = `${day[0]} : ${prixLabel} €`;
-        if (day[0] === 'Frais de ménage') {
-            li.classList.add('menage-line');
-        }
         list.appendChild(li);
     });
 
