@@ -94,10 +94,11 @@ document.getElementById('calc-form').addEventListener('submit', async (e) => {
 });
 
 async function afficherTableau(formData) {
-    const params = new URLSearchParams(Object.fromEntries(formData)).toString();
+    const params = new URLSearchParams(Object.fromEntries(formData));
+    params.set('menage', document.getElementById('menage').checked ? 'true' : 'false');
     const plate = formData.get('plateforme');
-    
-    const response = await fetch(`/tableau?${params}`);
+
+    const response = await fetch(`/tableau?${params.toString()}`);
     const data = await response.json();
 
     const tbody = document.querySelector('#tarifs-table tbody');
@@ -114,8 +115,9 @@ async function afficherTableau(formData) {
 }
 
 async function afficherDetail(formData) {
-    const params = new URLSearchParams(Object.fromEntries(formData)).toString();
-    const response = await fetch(`/detail?${params}`);
+    const params = new URLSearchParams(Object.fromEntries(formData));
+    params.set('menage', document.getElementById('menage').checked ? 'true' : 'false');
+    const response = await fetch(`/detail?${params.toString()}`);
     const data = await response.json();
 
     document.getElementById('total-price').innerHTML = `<strong>Total : ${data.total.toFixed(2)} €</strong> (${data.nb_nuitees} nuits)`;

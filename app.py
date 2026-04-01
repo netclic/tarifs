@@ -31,7 +31,8 @@ def home(request: Request):
         "default_fin": jour_depart.isoformat()
     })
 
-FRAIS_MENAGE = 40.0
+def frais_menage(nb_nuitees: int) -> float:
+    return 25.0 if nb_nuitees <= 2 else 40.0
 
 @app.get("/tableau")
 def tableau(
@@ -46,7 +47,7 @@ def tableau(
     if menage:
         for row in rows:
             try:
-                row["prix_semaine_7j"] = f"{float(row['prix_semaine_7j']) + FRAIS_MENAGE:.2f}"
+                row["prix_semaine_7j"] = f"{float(row['prix_semaine_7j']) + frais_menage(7):.2f}"
             except ValueError:
                 pass  # "trop court" — on ne touche pas
     return rows
@@ -68,8 +69,9 @@ def detail(
     # On utilise formater_date_jour pour envoyer une chaîne déjà prête
     formated_details = [[formater_date_jour(d), p] for d, p in details]
     if menage:
-        formated_details.append(["Frais de ménage", FRAIS_MENAGE])
-        total += FRAIS_MENAGE
+        montant_menage = frais_menage(nb_nuitees)
+        formated_details.append(["Frais de ménage", montant_menage])
+        total += montant_menage
 
     return {
         "details": formated_details,

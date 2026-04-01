@@ -141,10 +141,19 @@ th {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-bottom: 15px;
 }
 .form-group--checkbox input[type="checkbox"] {
     width: auto;
+    padding: 0;
     margin: 0;
+    flex-shrink: 0;
+}
+.form-group--checkbox label {
+    display: inline;
+    font-weight: normal;
+    margin-bottom: 0;
+    cursor: pointer;
 }
 #daily-list li.menage-line {
     border-top: 2px solid #3498db;

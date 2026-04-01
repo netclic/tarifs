@@ -145,8 +145,9 @@ def main():
         date_col = formater_date_jour(jour)
         print(f"{date_col} : {prix:>6.2f} €")
     if args.menage:
-        print(f"{'Frais de ménage':<20} :  40.00 €")
-        total += 40.0
+        montant_menage = 25.0 if nb_jours <= 2 else 40.0
+        print(f"{'Frais de ménage':<20} : {montant_menage:>6.2f} €")
+        total += montant_menage
     print("-" * 30)
     print(f"Prix total   : {total:>6.2f} €, pour {nb_jours} nuits.")
     print(f"Prix moyen   : {total/nb_jours:>6.2f} € par nuit.")
