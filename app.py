@@ -31,37 +31,52 @@ def home(request: Request):
         "default_fin": jour_depart.isoformat()
     })
 
+FRAIS_MENAGE = 40.0
+
 @app.get("/tableau")
 def tableau(
     date_debut: date = Query(...),
     date_fin: date = Query(...),
-    plateforme: str = Query(None, enum=["airbnb", "booking", "abritel"])
+    plateforme: str = Query(None, enum=["airbnb", "booking", "abritel", "gites"]),
+    menage: bool = Query(False)
 ):
     # On calcule jusqu'à la veille du départ
     derniere_nuitee = date_fin - timedelta(days=1)
-    return calcul_tableau(date_debut, derniere_nuitee, plateforme)
+    rows = calcul_tableau(date_debut, derniere_nuitee, plateforme)
+    if menage:
+        for row in rows:
+            try:
+                row["prix_semaine_7j"] = f"{float(row['prix_semaine_7j']) + FRAIS_MENAGE:.2f}"
+            except ValueError:
+                pass  # "trop court" — on ne touche pas
+    return rows
 
 
 @app.get("/detail")
 def detail(
     date_debut: date = Query(...),
-    date_fin: date = Query(...)
+    date_fin: date = Query(...),
+    menage: bool = Query(False)
 ):
     # On calcule jusqu'à la veille du départ
     derniere_nuitee = date_fin - timedelta(days=1)
     details, total = calcul_detail(date_debut, derniere_nuitee)
-    
+
     nb_nuitees = len(details)
     moyenne = total / nb_nuitees if nb_nuitees > 0 else 0
-    
+
     # On utilise formater_date_jour pour envoyer une chaîne déjà prête
     formated_details = [[formater_date_jour(d), p] for d, p in details]
-    
+    if menage:
+        formated_details.append(["Frais de ménage", FRAIS_MENAGE])
+        total += FRAIS_MENAGE
+
     return {
-        "details": formated_details, 
+        "details": formated_details,
         "total": total,
         "moyenne": moyenne,
-        "nb_nuitees": nb_nuitees
+        "nb_nuitees": nb_nuitees,
+        "menage": menage
     }
 
 @app.get("/download-csv")

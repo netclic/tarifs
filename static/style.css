@@ -137,3 +137,18 @@ th {
     border-bottom: 1px solid #f0f0f0;
     white-space: pre; /* Important pour garder les espaces d'alignement */
 }
+.form-group--checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-group--checkbox input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+#daily-list li.menage-line {
+    border-top: 2px solid #3498db;
+    margin-top: 4px;
+    font-weight: bold;
+    color: #2980b9;
+}

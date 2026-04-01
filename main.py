@@ -56,6 +56,10 @@ def main():
     parser.add_argument("-c", "--commission", choices=["airbnb", "booking", "abritel", "gites"],
                         help="Calculer le tableau avec la commission d'une plateforme")
 
+    # Argument pour les frais de ménage
+    parser.add_argument("-m", "--menage", action="store_true",
+                        help="Ajouter les frais de ménage (40 €) au total")
+
     # On garde --airbnb pour la compatibilité ou on le retire, ici je le laisse comme alias
     parser.add_argument("--airbnb", action="store_true",
                         help="Ancien switch pour Airbnb (équivalent à -c airbnb)")
@@ -139,7 +143,10 @@ def main():
     print("\nDétail journalier :")
     for jour, prix in details:
         date_col = formater_date_jour(jour)
-        print(f"{date_col} : {prix:>6.2f} €") # >6.2f aligne le prix à droite
+        print(f"{date_col} : {prix:>6.2f} €")
+    if args.menage:
+        print(f"{'Frais de ménage':<20} :  40.00 €")
+        total += 40.0
     print("-" * 30)
     print(f"Prix total   : {total:>6.2f} €, pour {nb_jours} nuits.")
     print(f"Prix moyen   : {total/nb_jours:>6.2f} € par nuit.")

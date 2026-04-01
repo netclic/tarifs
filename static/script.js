@@ -125,9 +125,11 @@ async function afficherDetail(formData) {
     list.innerHTML = '';
     data.details.forEach(day => {
         const li = document.createElement('li');
-        // day[0] contient déjà "mercredi  04-04-2026" grâce à Python
-        const prixLabel = day[1].toFixed(2).padStart(7, ' '); 
+        const prixLabel = day[1].toFixed(2).padStart(7, ' ');
         li.innerText = `${day[0]} : ${prixLabel} €`;
+        if (day[0] === 'Frais de ménage') {
+            li.classList.add('menage-line');
+        }
         list.appendChild(li);
     });
 
