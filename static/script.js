@@ -122,24 +122,22 @@ async function afficherDetail(formData) {
 
     const box = document.querySelector('.summary-box');
     const lignes = [
-        `Nuitées         : ${data.total_nuitees.toFixed(2)} € (${data.nb_nuitees} nuits · moy. ${data.moyenne.toFixed(2)} €/nuit)`,
+        { label: `Nuitées <small>(${data.nb_nuitees} nuits · moy. ${data.moyenne.toFixed(2)} €/nuit)</small>`, valeur: `${data.total_nuitees.toFixed(2)} €` },
     ];
     if (data.menage_montant > 0) {
-        lignes.push(`Frais de ménage : ${data.menage_montant.toFixed(2)} €`);
+        lignes.push({ label: 'Frais de ménage', valeur: `${data.menage_montant.toFixed(2)} €` });
     }
-    lignes.push(`Total           : ${data.total.toFixed(2)} €`);
-    box.innerHTML = lignes.map((l, i) => {
-        const isLast = i === lignes.length - 1;
-        return `<p class="summary-line${isLast ? ' summary-total' : ''}">${l}</p>`;
-    }).join('');
+    lignes.push({ label: 'Total', valeur: `${data.total.toFixed(2)} €`, total: true });
+    box.innerHTML = lignes.map(l =>
+        `<p class="summary-line${l.total ? ' summary-total' : ''}"><span>${l.label}</span><span>${l.valeur}</span></p>`
+    ).join('');
 
     const list = document.getElementById('daily-list');
     list.innerHTML = '';
     data.details.forEach(day => {
         if (day[0] === 'Frais de ménage') return; // affiché dans le récapitulatif
         const li = document.createElement('li');
-        const prixLabel = day[1].toFixed(2).padStart(7, ' ');
-        li.innerText = `${day[0]} : ${prixLabel} €`;
+        li.innerHTML = `<span>${day[0]}</span><span>${day[1].toFixed(2)} €</span>`;
         list.appendChild(li);
     });
 

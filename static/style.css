@@ -124,29 +124,35 @@ th {
     border-left: 5px solid #3498db;
 }
 .summary-line {
-    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 4px 0;
     font-size: 0.95rem;
-    margin: 3px 0;
-    white-space: pre;
+}
+.summary-line small {
+    color: #666;
+    font-size: 0.82rem;
+    margin-left: 6px;
 }
 .summary-total {
     border-top: 1px solid #a8cfe8;
     margin-top: 6px;
     padding-top: 6px;
+    font-weight: bold;
 }
 
 #daily-list {
     list-style: none;
-    padding: 0;
-    font-family: 'Courier New', Courier, monospace; /* Police pour l'alignement */
+    padding: 10px;
     background: #fdfdfd;
     border-radius: 4px;
-    padding: 10px;
 }
 #daily-list li {
+    display: flex;
+    justify-content: space-between;
     padding: 4px 10px;
     border-bottom: 1px solid #f0f0f0;
-    white-space: pre; /* Important pour garder les espaces d'alignement */
 }
 .form-group--checkbox {
     display: flex;
