@@ -137,7 +137,11 @@ async function afficherDetail(formData) {
     data.details.forEach(day => {
         if (day[0] === 'Frais de ménage') return; // affiché dans le récapitulatif
         const li = document.createElement('li');
-        li.innerHTML = `<span>${day[0]}</span><span>${day[1].toFixed(2)} €</span>`;
+        // day[0] = "lundi     04-05-2026" — on sépare le nom du jour et la date
+        const parts = day[0].trim().split(/\s+/);
+        const nomJour = parts[0];
+        const dateStr = parts[1] || '';
+        li.innerHTML = `<span class="day-label"><span class="day-name">${nomJour}</span><span class="day-date">${dateStr}</span></span><span class="day-price">${day[1].toFixed(2)} €</span>`;
         list.appendChild(li);
     });
 

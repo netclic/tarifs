@@ -144,15 +144,39 @@ th {
 
 #daily-list {
     list-style: none;
-    padding: 10px;
+    padding: 0;
     background: #fdfdfd;
     border-radius: 4px;
+    overflow: hidden;
 }
 #daily-list li {
     display: flex;
     justify-content: space-between;
-    padding: 4px 10px;
+    align-items: center;
+    padding: 6px 12px;
     border-bottom: 1px solid #f0f0f0;
+}
+#daily-list li:nth-child(even) {
+    background: #f7f9fb;
+}
+.day-label {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+}
+.day-name {
+    font-weight: 500;
+    min-width: 4.5rem;
+    text-transform: capitalize;
+}
+.day-date {
+    color: #555;
+    font-size: 0.9rem;
+}
+.day-price {
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
 }
 .form-group--checkbox {
     display: flex;
