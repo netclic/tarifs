@@ -172,9 +172,34 @@ th {
     margin-bottom: 0;
     cursor: pointer;
 }
-#daily-list li.menage-line {
-    border-top: 2px solid #3498db;
-    margin-top: 4px;
-    font-weight: bold;
-    color: #2980b9;
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
+    .container {
+        padding: 15px;
+        border-radius: 4px;
+    }
+    h1 {
+        font-size: 1.2rem;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .summary-line {
+        flex-direction: column;
+        gap: 2px;
+    }
+    .summary-line small {
+        display: block;
+        margin-left: 0;
+    }
+    th, td {
+        padding: 7px 6px;
+        font-size: 0.82rem;
+    }
+    .form-group--checkbox label {
+        font-size: 0.88rem;
+    }
 }
