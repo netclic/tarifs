@@ -12,7 +12,7 @@ class TableauTarifs:
     COMMISSIONS = {
         "airbnb": 0.155,
         "booking": 0.164,
-        "abritel": 0.08,
+        "abritel": 0.13,
         "gites" : 0.03
     }
 
